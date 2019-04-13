@@ -12,13 +12,13 @@ const time = cnfg.time // время
 let c = 0 //Для подсчёта
 //проверки
 	if(id < 1)return console.error(`Вы не указали ID!`)
-	if(isNaN(id) || !id)return console.error(`Неккоректный ID!`)
+	if(isNaN(id))return console.error(`Неккоректный ID!`)
 	if(spam < 1)return console.error(`А сколько надо спамить?`)
-	if(isNaN(spam) || !spam)return console.error(`Неккоректное количество спама!`)
+	if(isNaN(spam))return console.error(`Неккоректное количество спама!`)
 	if(time < 0)return console.error(`Число времени уходит в минус!`)
-	if(isNaN(time) || !time)return console.error(`Неккоректное время!`)
+	if(isNaN(time))return console.error(`Неккоректное время!`)
 	if(chat < 1)return console.error(`Вы не указали ID чата!`)
-	if(isNaN(chat) || !chat)return console.error(`Неккоректный chatID!`)
+	if(isNaN(chat))return console.error(`Неккоректный chatID!`)
 	if(spam > 20)return console.error(`Такое число вызывает FloodControl!`)
 		//если убрать, то будет капец.
 	// а теперь спам собсна входом/выходом
