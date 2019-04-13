@@ -8,15 +8,14 @@ const vk = new VK({
 const id = cnfg.inviteId // ID человека для спама
 const spam = cnfg.count // кол-во спама
 const chat = cnfg.chatId // ID чата
-const time = cnfg.time * 1000 // время
-const check = cnfg.time // для проверки
+const time = cnfg.time // время
 let c = 0 //Для подсчёта
 //проверки
 	if(id < 1)return console.error(`Вы не указали ID!`)
 	if(isNaN(id) || !id)return console.error(`Неккоректный ID!`)
 	if(spam < 1)return console.error(`А сколько надо спамить?`)
 	if(isNaN(spam) || !spam)return console.error(`Неккоректное количество спама!`)
-	if(check < 0)return console.error(`Число времени уходит в минус!`)
+	if(time < 0)return console.error(`Число времени уходит в минус!`)
 	if(isNaN(time) || !time)return console.error(`Неккоректное время!`)
 	if(chat < 1)return console.error(`Вы не указали ID чата!`)
 	if(isNaN(chat) || !chat)return console.error(`Неккоректный chatID!`)
@@ -36,6 +35,7 @@ var timerId = setInterval(function() { // новый таймер
 	console.log(`Заспамлено уже: ${c} раз`) // каунтер
 	if(c == spam){
 		clearInterval(timerId);
+		console.log(`Закончил`)
 	}
 }, time);
-return console.log(`Заспамлено!`)
+return console.log(`Начал спамить`)
