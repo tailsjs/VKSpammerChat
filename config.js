@@ -6,9 +6,11 @@ const token = ""; // токен
 const count = 0; // сколько раз надо инвайтнуть/кикнуть
 const inviteId = 0; // сюда ID того, кем вы хотите спамить. Важно, что-бы это был ваш друг.
 const chatId = 0; // ID чата
+const time = 0; // время в секундах. сделано для того, что-бы чат-менеджеры не посчитали этот спам - подозрительная активность
 module.exports = {
 	token,
 	count,
 	inviteId,
-	chatId
+	chatId,
+	time
 }
