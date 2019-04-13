@@ -1,1 +1,1 @@
-cmd
+node start
