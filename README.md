@@ -23,4 +23,4 @@
 
 
 
-# Если нужна помощь, пишите мне в лс: https://vk.com/boyfromt4ils
+# Если нужна помощь, пишите мне в лс: https://vk.com/tailsjs
