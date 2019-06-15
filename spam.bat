@@ -1,1 +1,1 @@
-node start
+node spam
