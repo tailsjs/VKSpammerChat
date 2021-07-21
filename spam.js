@@ -21,46 +21,53 @@ if (config.errorLimit < 1 || isNaN(config.errorLimit)) {
 	process.exit();
 }
 
-const interval = setInterval(async function () {
-	let isError = false;
-	++inviteCount;
-	await vk.api.messages
-		.removeChatUser({
-			// удаляет пользователя из беседы
+// убирает пользователя из беседы
+const removeUserFromChat = async () => {
+	try {
+		await vk.api.messages.removeChatUser({
 			chat_id: config.chat_id,
 			user_id: config.invite_id,
-		})
-		.catch(() => {
-			console.error("Облом.");
-			++errorsCount;
-			isError = true;
 		});
-	await vk.api.messages
-		.addChatUser({
-			// приглашает пользователя в беседу
-			chat_id: config.chat_id,
-			user_id: config.invite_id,
-		})
-		.catch(() => {
-			{
-				console.error("Облом.");
-				++errorsCount;
-				isError = true;
-			}
-		});
-
-	if (isError) {
-		if (errorsCount >= config.errorLimit) {
-			console.log(`Лимит ошибок превышен.`);
-			clearInterval(interval);
-			process.exit();
-		}
-	} else {
-		console.log(`Заспамлено уже: ${c} раз`); // каунтер
-		if (c === config.amount) {
-			console.log("Готово.");
-			clearInterval(interval);
-			process.exit();
+	} catch (error) {
+		if (error.code !== 15) {
+			throw new Error();
 		}
 	}
-}, config.time * 1000);
+};
+
+// приглашает пользователя в беседу
+const addUserToChat = async () => {
+	try {
+		await vk.api.messages.addChatUser({
+			chat_id: config.chat_id,
+			user_id: config.invite_id,
+		});
+	} catch (error) {
+		if (error.code !== 935) {
+			throw new Error();
+		}
+	}
+};
+
+(async function main() {
+	while (!isError) {
+		++inviteCount;
+		await removeUserFromChat().catch(() => {
+			++errorsCount;
+		});
+		await addUserToChat().catch(() => {
+			++errorsCount;
+		});
+		if (inviteCount >= config.amount) {
+			console.log(`Готово.`);
+			process.exit();
+		} else if (errorsCount >= config.errorLimit) {
+			console.log(`Превышен лимит ошибок.`);
+			process.exit();
+		} else {
+			await new Promise((resolve) => {
+				setTimeout(() => resolve(), configValue * 1_000);
+			});
+		}
+	}
+})();
