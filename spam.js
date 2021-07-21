@@ -22,41 +22,33 @@ if (config.errorLimit < 1 || isNaN(config.errorLimit)) {
 }
 
 // убирает пользователя из беседы
-const removeUserFromChat = async () => {
-	try {
-		await vk.api.messages.removeChatUser({
-			chat_id: config.chat_id,
-			user_id: config.invite_id,
-		});
-	} catch (error) {
-		if (error.code !== 15) {
-			throw new Error();
-		}
-	}
+const removeUserFromChat = () => {
+	return vk.api.messages.removeChatUser({
+		chat_id: config.chat_id,
+		user_id: config.invite_id,
+	});
 };
 
 // приглашает пользователя в беседу
-const addUserToChat = async () => {
-	try {
-		await vk.api.messages.addChatUser({
-			chat_id: config.chat_id,
-			user_id: config.invite_id,
-		});
-	} catch (error) {
-		if (error.code !== 935) {
-			throw new Error();
-		}
-	}
+const addUserToChat = () => {
+	return vk.api.messages.addChatUser({
+		chat_id: config.chat_id,
+		user_id: config.invite_id,
+	});
 };
 
 (async function main() {
-	while (!isError) {
+	while (true) {
 		++inviteCount;
-		await removeUserFromChat().catch(() => {
-			++errorsCount;
+		await removeUserFromChat().catch((error) => {
+			if (error.code !== 15) {
+				++errorsCount;
+			}
 		});
-		await addUserToChat().catch(() => {
-			++errorsCount;
+		await addUserToChat().catch((error) => {
+			if (error.code !== 935) {
+				++errorsCount;
+			}
 		});
 		if (inviteCount >= config.amount) {
 			console.log(`Готово.`);
@@ -66,7 +58,7 @@ const addUserToChat = async () => {
 			process.exit();
 		} else {
 			await new Promise((resolve) => {
-				setTimeout(() => resolve(), configValue * 1_000);
+				setTimeout(() => resolve(), config.time * 1_000);
 			});
 		}
 	}
