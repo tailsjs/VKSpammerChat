@@ -1,41 +1,29 @@
-//Собственно, сам скрипт.
-const cnfg = require("./config.js")
+const config = require("./config.js")
 const { VK } = require("vk-io")
-const { Request } = require("vk-io")
 const vk = new VK({
-	token: cnfg.token
+	token: config.token
 })
-const id = cnfg.inviteId // ID человека для спама
-const spam = cnfg.count // кол-во спама
-const chat = cnfg.chatId // ID чата
-const time = cnfg.time // время
-let c = 0 //Для подсчёта
-//проверки
-	if(id < 1)return console.error(`Вы не указали ID!`)
-	if(isNaN(id))return console.error(`Неккоректный ID!`)
-	if(spam < 1)return console.error(`А сколько надо спамить?`)
-	if(isNaN(spam))return console.error(`Неккоректное количество спама!`)
-	if(time < 0)return console.error(`Число времени уходит в минус!`)
-	if(isNaN(time))return console.error(`Неккоректное время!`)
-	if(chat < 1)return console.error(`Вы не указали ID чата!`)
-	if(isNaN(chat))return console.error(`Неккоректный chatID!`)
-	if(spam > 20)return console.error(`Такое число вызывает FloodControl!`)
-		//если убрать, то будет капец.
-	// а теперь спам собсна входом/выходом
-var timerId = setInterval(function() { // новый таймер
- vk.api.messages.removeChatUser({ // удаляет пользователя из беседы
-		chat_id: chat,
-	user_id: id
+if(config.invite_id < 1 || isNaN(config.invite_id))return console.error('некорректно введён параметр "invite_id"')
+if(config.amount < 1 || isNaN(config.amount))return console.error('некоррктно введён параметр "amount"')
+let c = 0
+setInterval(function() {
+	c += 1
+ 	vk.api.messages.removeChatUser({ // удаляет пользователя из беседы
+		chat_id: config.chat_id,
+		user_id: config.invite_id
+	}).catch(function(){
+		return console.error('облом.')
 	})
 	vk.api.messages.addChatUser({ // приглашает пользователя в беседу
-		chat_id: chat,
-	user_id: id
-	}) 
-	c += 1 // если в первой версии было только для показателя спама, теперь это может остановить это
+		chat_id: config.chat_id,
+		user_id: config.invite_id
+	}).catch(function(){
+		return console.error('облом.')
+	})
+	
 	console.log(`Заспамлено уже: ${c} раз`) // каунтер
-	if(c == spam){
-		clearInterval(timerId);
-		console.log(`Закончил`)
+	if(c == config.amount){
+		console.log('готово.')
+		break
 	}
-}, time);
-return console.log(`Начал спамить`)
+}, config.time*1000);
